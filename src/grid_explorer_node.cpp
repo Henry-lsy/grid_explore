@@ -1,27 +1,27 @@
-#include "GridPartitioningAndTSP.h"
 #include <iostream>
+#include <ros/ros.h>
 
-int main() {
-    int length = 100;
-    int width = 100;
-    int rows = 10;
-    int cols = 10;
-    int numPartitions = 5;
+#include "grid_explorer/grid_partitioning_ros.h"
 
-    // 创建网格
-    auto grid = createGrid(length, width, rows, cols);
+int main(int argc, char** argv) {
 
-    // 选择n个不同的起点
+    ros::init(argc, argv, "grid_explorer_node");
+    ros::NodeHandle nh("~");
+    GridPartitioningROS grid_partitioning_ros(nh);
+
     std::vector<Point> startPoints = { {0, 0}, {90, 0}, {0, 90}, {90, 90}, {45, 45} };
+   
+    // 创建网格
+    grid_partitioning_ros.setStartPositions(startPoints);
 
-    // 将网格随机分成n份，每份包含一个起点
-    auto partitions = randomPartitionGrid(grid, startPoints);
+    std::vector<std::vector<Point>> explorer_paths;
+    // 选择n个不同的起点
+    explorer_paths = grid_partitioning_ros.generateGridSequences();
 
-    // 计算每个分区的最优TSP路径
-    for (int i = 0; i < partitions.size(); ++i) {
-        auto bestPath = solveTSP(partitions[i]);
+    // 输出每个分区的最优TSP路径
+    for (int i = 0; i < explorer_paths.size(); ++i) {
         std::cout << "Best path for partition " << i + 1 << ":\n";
-        for (const auto& point : bestPath) {
+        for (const auto& point : explorer_paths[i]) {
             std::cout << "(" << point.x << ", " << point.y << ") -> ";
         }
         std::cout << "End\n\n";
