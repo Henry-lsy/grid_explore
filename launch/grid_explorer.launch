@@ -1,0 +1,9 @@
+<launch>
+  <node name="grid_explorer" pkg="grid_explorer" type="grid_explorer_node" output="screen">
+    <param name="length" type="int" value="50" />
+    <param name="width" type="int" value="50" />
+    <param name="rows" type="int" value="10" />
+    <param name="cols" type="int" value="10" />
+    <param name="num_partitions" type="int" value="5" />
+  </node>
+</launch>
